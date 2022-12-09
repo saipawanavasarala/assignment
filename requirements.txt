@@ -1,0 +1,5 @@
+flask
+pandas
+sqlite3
+flask-mail
+flask-cors
