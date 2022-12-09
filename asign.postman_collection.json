@@ -1,0 +1,118 @@
+{
+	"info": {
+		"_postman_id": "733eda74-0c7f-4da5-a4d7-50024242f95d",
+		"name": "asign",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "pawan",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://pawantempmail2.pythonanywhere.com/login",
+					"protocol": "http",
+					"host": [
+						"pawantempmail2",
+						"pythonanywhere",
+						"com"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "avasarala",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "default"
+						},
+						{
+							"key": "email",
+							"value": "avasaralasaipavan@gmail.com",
+							"type": "default"
+						},
+						{
+							"key": "fullname",
+							"value": "sai pawan",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://pawantempmail2.pythonanywhere.com/signup",
+					"protocol": "http",
+					"host": [
+						"pawantempmail2",
+						"pythonanywhere",
+						"com"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://pawantempmail2.pythonanywhere.com/verify/",
+					"protocol": "http",
+					"host": [
+						"pawantempmail2",
+						"pythonanywhere",
+						"com"
+					],
+					"path": [
+						"verify",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postContent",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
