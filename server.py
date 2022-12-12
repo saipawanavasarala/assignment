@@ -20,14 +20,14 @@ def SSO(func):
 
         token=request.headers["Authorization"].split(" ")[-1]
 
-        if "username" in request.form:
-            username=request.form['username']
-            dbusername=pd.read_sql(f"select username from user where token='{token}'  ",conn)
-            dbusername=dbusername.to_dict('records')[0]['username']
-            if dbusername==username:
-                pass
-            else:
-                return Response("UnAuthorized access",401)
+        # if "username" in request.form:
+        #     username=request.form['username']
+        #     dbusername=pd.read_sql(f"select username from user where token='{token}'  ",conn)
+        #     dbusername=dbusername.to_dict('records')[0]['username']
+        #     if dbusername==username:
+        #         pass
+        #     else:
+        #         return Response("UnAuthorized access",401)
 
         verifyToken=pd.read_sql(f"select verified from user where token='{token}' ",conn)
         verifiedUser=verifyToken.values[0][0]
@@ -183,20 +183,62 @@ def postContent():
 
         return "posted successfully"
 
+    # if request.method=="PUT":
+    #     clientData=request.form
+    #     postId=clientData['postid']
+    #     username=clientData['username']
+
+    #     cursor=conn.cursor()
+    #     cursor.execute(f"update post set likes=likes+1 where postid={postId}")
+    #     conn.commit()
+    #     data=pd.read_sql(f"select email from user where username='{username}' ",conn)
+    #     data=data.to_dict('records')[0]
+    #     print(data['email'])
+    #     sendMsg(data['email'],"you have liked the post","liking post")
+
+    #     return username
+
     if request.method=="PUT":
         clientData=request.form
         postId=clientData['postid']
-        username=clientData['username']
+        ownerName=clientData['ownername']
+        userName=clientData['username']
 
-        cursor=conn.cursor()
-        cursor.execute(f"update post set likes=likes+1 where postid={postId}")
-        conn.commit()
-        data=pd.read_sql(f"select email from user where username='{username}' ",conn)
-        data=data.to_dict('records')[0]
-        print(data['email'])
-        sendMsg(data['email'],"you have liked the post","liking post")
+        df=pd.read_sql(f"select likedBy from post where postid= {postId}",conn)
+        df=df.to_dict('records')[0]['likedBy']
+        
+        if len(df)>0:
+            cursor=conn.cursor()
+            df=df.split(",")
+           
+            if userName in df:
+                df.remove(userName)
+                print(df)
+                length=len(df)
+                stk=",".join(element for element in df if len(element)>0)
 
-        return username
+                cursor.execute(f"update post set likes={length},likedBy='{stk}' where postid={postId}")
+                conn.commit()
+            else:
+                df.append(userName)
+                
+                stk=",".join(element for element in df if len(element)>0)
+                length=len(stk.split(","))
+                cursor.execute(f"update post set likes={length},likedBy='{stk}' where postid={postId}")
+                conn.commit()
+
+        else:
+            cursor=conn.cursor()
+            df=df.split(",")
+            df.append(userName)
+            
+            stk=",".join(element for element in df if len(element)>0)
+            length=len(stk.split(","))
+            cursor.execute(f"update post set likes={length},likedBy='{stk}' where postid={postId}")
+            conn.commit()
+
+        return "successfull"
+
 
 
     if request.method=="DELETE":
@@ -216,7 +258,6 @@ def postContent():
 
 
 @app.route("/userPost",methods=['POST',"GET"])
-
 def userPost():
     if request.method=="POST":
         username=request.form['username']
