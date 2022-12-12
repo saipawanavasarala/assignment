@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request,Response
+from flask import Flask,jsonify,request,Response,render_template
 #from flask_cors import CORS
 import sqlite3
 import pandas as pd
@@ -18,16 +18,7 @@ def SSO(func):
 
         
 
-        token=request.headers["Authorization"].split(" ")[-1]
-
-        # if "username" in request.form:
-        #     username=request.form['username']
-        #     dbusername=pd.read_sql(f"select username from user where token='{token}'  ",conn)
-        #     dbusername=dbusername.to_dict('records')[0]['username']
-        #     if dbusername==username:
-        #         pass
-        #     else:
-        #         return Response("UnAuthorized access",401)
+        token=request.headers["Authorization"].split(" ")[-1]   
 
         verifyToken=pd.read_sql(f"select verified from user where token='{token}' ",conn)
         verifiedUser=verifyToken.values[0][0]
@@ -143,8 +134,8 @@ def signup():
 
 @app.route("/verify/<string:username>",methods=["GET"])
 def verify(username):
-    try:
-        username=str(username)
+    try: 
+        username=str(username)  
         cursor=conn.cursor()
         cursor.execute(f"update user set verified=1 where username='{username}'")
         conn.commit()
@@ -271,6 +262,22 @@ def userPost():
 
         return jsonify(data)
     
+
+
+@app.route("/users")
+def users():
+    data=pd.read_sql(f"select * from user",conn)
+    col=data.columns 
+    data=data.to_dict('records')
+    return render_template("users.html",data=data,columns=col)   
+
+@app.route("/posts",methods=["GET","POST"]) 
+def posts():
+    data=pd.read_sql(f"select * from post",conn)
+    col=data.columns 
+    data=data.to_dict('records')
+    
+    return render_template("posts.html",data=data,columns=col)
 
 if __name__=="__main__":
     app.run(debug=True)
